@@ -24,7 +24,7 @@ const Header = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch('/api/getme', {
+        const res = await fetch('https://server-gzmw.onrender.com/api/getme', {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -50,7 +50,7 @@ const Header = () => {
 
       try {
         const notificationsRes = await axios.post(
-          '/api/getMynotifications',
+          'https://server-gzmw.onrender.com/api/getMynotifications',
           { token },
           {
             headers: {
@@ -80,7 +80,7 @@ const Header = () => {
 
   const Logout = async () => {
     try {
-      const response = await axios.post('/api/logout', {}, {
+      const response = await axios.post('https://server-gzmw.onrender.com/api/logout', {}, {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
@@ -109,7 +109,7 @@ const Header = () => {
         destinationPath = `/secretary/memo_Icreate/${memoId}`;
       }
     } else if (notification.type === 'New Memo') {
-      await axios.post('/api/memo/read', { token, memoId }, {
+      await axios.post('https://server-gzmw.onrender.com/api/memo/read', { token, memoId }, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
