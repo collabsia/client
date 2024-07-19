@@ -18,7 +18,7 @@ const Unregisteruserdashboard = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get('/api/getme', {
+        const response = await axios.get('https://server-gzmw.onrender.com/api/getme', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -58,7 +58,7 @@ const Unregisteruserdashboard = () => {
       return;
     }
     try {
-      const updateRoleResponse = await axios.post('/api/updaterole', {
+      const updateRoleResponse = await axios.post('https://server-gzmw.onrender.com/api/updaterole', {
         code: verificationCode,
         department,
         token,
