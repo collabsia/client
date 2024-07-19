@@ -96,7 +96,7 @@ const AdminCreateMemo = () => {
       formData.append('recipients', JSON.stringify(recipientsArray));
       formData.append('token', token);
 
-      const { data } = await axios.post('/api/memo/sendmemo', formData, {
+      const { data } = await axios.post('https://server-gzmw.onrender.com/api/memo/sendmemo', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`,
@@ -140,28 +140,28 @@ const AdminCreateMemo = () => {
     let endpoint = '';
     switch (value) {
       case 'BSIT':
-        endpoint = '/api/getbsit';
+        endpoint = 'https://server-gzmw.onrender.com/api/getbsit';
         break;
       case 'BSAT':
-        endpoint = '/api/getbsat';
+        endpoint = 'https://server-gzmw.onrender.com/api/getbsat';
         break;
       case 'BSFT':
-        endpoint = '/api/getbsft';
+        endpoint = 'https://server-gzmw.onrender.com/api/getbsft';
         break;
       case 'BSET':
-        endpoint = '/api/getbset';
+        endpoint = 'https://server-gzmw.onrender.com/api/getbset';
         break;
       case 'ALL':
-        endpoint = '/api/getuserhaverole';
+        endpoint = 'https://server-gzmw.onrender.com/api/getuserhaverole';
         break;
       case 'SECRETARY':
-        endpoint = '/api/getsecretary';
+        endpoint = 'https://server-gzmw.onrender.com/api/getsecretary';
         break;
       case 'ADMIN':
-        endpoint = '/api/getadmin';
+        endpoint = 'https://server-gzmw.onrender.com/api/getadmin';
         break;
       case 'USERS':
-        endpoint = '/api/getallregularuser';
+        endpoint = 'https://server-gzmw.onrender.com/api/getallregularuser';
         break;
       default:
         return;
@@ -184,7 +184,7 @@ const AdminCreateMemo = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const usersResponse = await axios.get('/api/getuserhaverole', {
+        const usersResponse = await axios.get('https://server-gzmw.onrender.com/api/getuserhaverole', {
           params: { token },
           headers: {
             Authorization: `Bearer ${token}`,
