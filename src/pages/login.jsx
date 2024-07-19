@@ -31,7 +31,7 @@ const Login = ({ history }) => {
 
   useEffect(() => {
     google.accounts.id.initialize({
-      client_id:'373547344231-uugg2iqm8p52tmq9iptiscn3905h1dlo.apps.googleusercontent.com',
+      client_id:'969033254125-qgp5cd4mafo9vpckd4ftuc8srmransi8.apps.googleusercontent.com',
       callback: handleCallbackResponse,
     });
 
