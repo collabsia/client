@@ -54,7 +54,7 @@ const Secretarydashboard = ({ history }) => {
   useEffect(() => {
     const fetchLatestReceivedMemos = async () => {
       try {
-        const response = await axios.get('/api/getme', {
+        const response = await axios.get('https://server-gzmw.onrender.com/api/getme', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -63,7 +63,7 @@ const Secretarydashboard = ({ history }) => {
         const email = response.data.user.email;
         const formattedDate = getCurrentFormattedDate();
 
-        const memoResponse = await axios.get('/api/getmemoofthismonth', {
+        const memoResponse = await axios.get('https://server-gzmw.onrender.com/api/getmemoofthismonth', {
           params: {
             date: formattedDate,
             token: token
@@ -103,7 +103,7 @@ const Secretarydashboard = ({ history }) => {
       const year = currentDate.getFullYear();
 
       const allReportResponse = await axios.post(
-        '/api/allreport',
+        'https://server-gzmw.onrender.com/api/allreport',
         {
           token,
           month,
@@ -181,7 +181,7 @@ const Secretarydashboard = ({ history }) => {
     const formattedDate = `${year}-${month}-${day}`;
 
     try {
-      const response = await fetch('/api/getme', {
+      const response = await fetch('https://server-gzmw.onrender.com/api/getme', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -192,7 +192,7 @@ const Secretarydashboard = ({ history }) => {
 
       const [memoResponse, eventResponse] = await Promise.all([
         axios.post(
-          '/api/memo/send-and-recieve',
+          'https://server-gzmw.onrender.com/api/memo/send-and-recieve',
           {
             date: formattedDate,
             token,
@@ -205,7 +205,7 @@ const Secretarydashboard = ({ history }) => {
         ),
 
         axios.post(
-          '/api/getevent',
+          'https://server-gzmw.onrender.com/api/getevent',
           {
             token,
             date: formattedDate,
@@ -288,7 +288,7 @@ const Secretarydashboard = ({ history }) => {
       window.location.href = `/secretary/memo_Icreate/${memoId}`;
     } else if (event.type === 'received') {
       await axios.post(
-        '/api/memo/read',
+        'https://server-gzmw.onrender.com/api/memo/read',
         {
           token,
           memoId,
@@ -313,7 +313,7 @@ const Secretarydashboard = ({ history }) => {
   };
 
   useEffect(() => {
-    fetch('/api/getme', {
+    fetch('https://server-gzmw.onrender.com/api/getme', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -336,7 +336,7 @@ const Secretarydashboard = ({ history }) => {
   const handleLatestReceivedMemoClick = async (memoId) => {
     try {
       await axios.post(
-        '/api/memo/read',
+        'https://server-gzmw.onrender.com/api/memo/read',
         {
           token,
           memoId,
