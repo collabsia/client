@@ -290,13 +290,16 @@ const AdminCreateMemo = () => {
                 </div>
               )}
 
-              {isConfirmationOpen && (
-                <div className="confirmation-modal">
-                  <div className="modal-content">
-                    <p>Are you sure you want to send this memo?</p>
-                    <div className="button-container">
-                    <button onClick={handleConfirmationClose} className="btn-no">No</button>
-        <button onClick={handleConfirmSend} className="btn-yes">Yes</button>    </div>
+          {isConfirmationOpen && (
+                <div className='editbuttodelete'>
+                  <div className="confirmation-modal">
+                    <div className="modal-content">
+                      <p>Are you sure you want to update the role of this user?</p>
+                      <div className="button-container">
+                        <button onClick={handleConfirmationClose} className="btn-no">No</button>
+                        <button onClick={handleConfirmSend} className="btn-yes">Yes</button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
