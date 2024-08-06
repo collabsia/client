@@ -74,7 +74,7 @@ const AdminMemoManager = () => {
         },
       });
 
-      history.push(`/admin/recieve_memo/${memoId}`);
+      history.push(`/admin/receive_memo/${memoId}`);
     } catch (error) {
       console.error('Error acknowledging memo:', error);
     }
