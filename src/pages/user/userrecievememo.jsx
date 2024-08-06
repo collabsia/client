@@ -24,7 +24,7 @@ const UserRecieveMemoDetails = ({ match }) => {
   const [endDateTime, setendDateTime] = useState('');
   const [summary, setSummary] = useState('');
   const [description, setDescription] = useState('');
-  const [googlecalendar, setgooglecalendar] = useState('');
+
 
   useEffect(() => {
     const fetchMemoDetails = async () => {
@@ -98,10 +98,7 @@ const UserRecieveMemoDetails = ({ match }) => {
 
     fetchMemoDetails();
   }, [memoId, token, history]);
-  const formatDate = (date) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-    return new Date(date).toLocaleDateString('en-US', options);
-  };
+
   const handleAcknowledge = async () => {
     try {
       const acknowledge = await axios.post(
@@ -228,6 +225,12 @@ const UserRecieveMemoDetails = ({ match }) => {
   if (!memoDetails) {
     return <p>Loading...</p>;
   }
+
+    const formatDate = (date) => {
+      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+      return new Date(date).toLocaleDateString('en-US', options);
+    };
+
   return (
     <>
       <HeaderDashboard />
@@ -261,14 +264,14 @@ const UserRecieveMemoDetails = ({ match }) => {
         </button>
     ) : (
         <p className="saved-message">
-            <span role="img" aria-label="Acknowledged">&#x2705;</span> {/* Checkmark icon */}
+            <span role="img" aria-label="Acknowledged">&#x2705;</span> 
             <span className="acknowledge-text">Google Calendar</span>
         </p>
     )}
 
     {isAcknowledged ? (
         <div className="acknowledge-indicator">
-            <span role="img" aria-label="Acknowledged">&#x2705;</span> {/* Checkmark icon */}
+            <span role="img" aria-label="Acknowledged">&#x2705;</span> 
             <span className="acknowledge-text">Acknowledged</span>
         </div>
     ) : (
@@ -314,4 +317,5 @@ const UserRecieveMemoDetails = ({ match }) => {
     </>
   );
 };
+
 export default UserRecieveMemoDetails;
