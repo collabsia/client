@@ -8,16 +8,17 @@ import '../../App.css';
 
 const Adminfacultymanager = ({ history }) => {
   const [userprofile, usersetProfile] = useState([]);
-  const [activeMenuItem, setActiveMenuItem] = useState('InviteMember');
+  const [showEditButton, setShowEditButton] = useState(true); 
   const [editMode, setEditMode] = useState(false);
   const [updatedrole, setUpdatedrole] = useState();
   const [editedUser, setEditedUser] = useState(null);
   const [isconfirmationopen, setConfirmationopen] = useState(false);
   const [isDeleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const token = localStorage.getItem('token');
-  const { email, name, role, picture, createdAt, department } = userprofile;
+
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+
 
   const handleSearch = (event) => {
     const { value } = event.target;
@@ -62,52 +63,52 @@ const Adminfacultymanager = ({ history }) => {
 
   const handleItemClick = (value) => {
     console.log(value);
-
+  
     const headers = {
       Authorization: `Bearer ${token}`,
     };
-
+  
     const params = {
       token,
     };
-
+  
     setLoading(true);
-
+  
     let url = '';
     let toastMessage = '';
-
+  
     switch (value) {
       case 'BSIT':
         url = 'https://server-gzmw.onrender.com/api/getallbsit';
-        toastMessage = 'Successfully retrieved BSIT members!';
+        toastMessage = 'Successfully Retrieved!';
         break;
       case 'BSAT':
         url = 'https://server-gzmw.onrender.com/api/getallbsat';
-        toastMessage = 'Successfully retrieved BSAT members!';
+        toastMessage = 'Successfully Retrieved!';
         break;
       case 'BSFT':
         url = 'https://server-gzmw.onrender.com/api/getallbsft';
-        toastMessage = 'Successfully retrieved BSFT members!';
+        toastMessage = 'Successfully Retrieved!';
         break;
       case 'BSET':
         url = 'https://server-gzmw.onrender.com/api/getallbset';
-        toastMessage = 'Successfully retrieved BSET members!';
+        toastMessage = 'Successfully Retrieved!';
         break;
       case 'ALL':
         url = 'https://server-gzmw.onrender.com/api/getallusers';
-        toastMessage = 'Successfully retrieved all users!';
+        toastMessage = 'Successfully Retrieved!';
         break;
       case 'SECRETARY':
         url = 'https://server-gzmw.onrender.com/api/getallsecretary';
-        toastMessage = 'Successfully retrieved secretaries!';
+        toastMessage = 'Successfully Retrieved!';
         break;
       case 'ADMIN':
         url = 'https://server-gzmw.onrender.com/api/getalladmin';
-        toastMessage = 'Successfully retrieved admins!';
+        toastMessage = 'Successfully Retrieved!';
         break;
-      case 'USERS':
+      case 'INSTRUCTORS':
         url = 'https://server-gzmw.onrender.com/api/getallinstructors';
-        toastMessage = 'Successfully retrieved users!';
+        toastMessage = 'Successfully Retrieved!';
         break;
       default:
         console.error('Invalid value:', value);
@@ -115,7 +116,7 @@ const Adminfacultymanager = ({ history }) => {
         toast.error('Invalid value');
         return;
     }
-
+  
     axios
       .get(url, { headers, params })
       .then((response) => {
@@ -141,7 +142,7 @@ const Adminfacultymanager = ({ history }) => {
           case 'ADMIN':
             usersetProfile(response.data.users);
             break;
-          case 'USERS':
+          case 'INSTRUCTORS':
             usersetProfile(response.data.users);
             break;
           default:
@@ -156,6 +157,7 @@ const Adminfacultymanager = ({ history }) => {
         toast.error(`Error fetching ${value} members`);
       });
   };
+  
 
   useEffect(() => {
     axios
@@ -248,8 +250,9 @@ const Adminfacultymanager = ({ history }) => {
 
 
       setEditMode(false);
+      setShowEditButton(true); 
       setUpdatedrole(updatedRoleName);
-      toast.success('Role updated successfully. Updated role for ' + updatedRoleName + updatedUser.role);
+      toast.success("Role updated successfully");
     } catch (error) {
       console.error('Error updating role:', error);
       toast.error('Error updating role: ' + updatedrole);
@@ -270,120 +273,140 @@ const Adminfacultymanager = ({ history }) => {
         return '';
     }
   };
-
+ 
   const handleEditUser = (user) => {
     setEditMode(true);
+    setShowEditButton(false);
+
     setEditedUser(user);
     setUpdatedrole(user.role);
   };
+  const handleCancelEdit = () => {
+    setEditMode(false);
+    setEditedUser(null);
+    setUpdatedrole(null);
+    setShowEditButton(true); 
+  };
+
 
   return (
     <>
       <HeaderDashboard />
       <div className="content-header">
-  <div className="spacer"></div>
+        <div className="spacer"></div>
+        
+        <div className="dropdownfaculty">
+          <button className="dropbtnfacultymanager">Filter</button>
+          <div className="dropdown-content">
+            <div onClick={() => handleItemClick('ALL')}>ALL</div>
+            <div onClick={() => handleItemClick('ADMIN')}>ADMIN</div>
+            <div onClick={() => handleItemClick('SECRETARY')}>SECRETARY</div>
+            <div onClick={() => handleItemClick('INSTRUCTORS')}>INSTRUCTORS</div>
+            <div onClick={() => handleItemClick('BSIT')}>BSIT</div>
+            <div onClick={() => handleItemClick('BSAT')}>BSAT</div>
+            <div onClick={() => handleItemClick('BSET')}>BSET</div>
+            <div onClick={() => handleItemClick('BSFT')}>BSFT</div>
+          </div>
+        </div>
   
-  <div className="dropdownfaculty">
-    <button className="dropbtnfacultymanager">Filter</button>
-    <div className="dropdown-content">
-      <div onClick={() => handleItemClick('ALL')}>ALL</div>
-      <div onClick={() => handleItemClick('ADMIN')}>ADMIN</div>
-      <div onClick={() => handleItemClick('SECRETARY')}>SECRETARY</div>
-      <div onClick={() => handleItemClick('USERS')}>USERS</div>
-      <div onClick={() => handleItemClick('BSIT')}>BSIT</div>
-      <div onClick={() => handleItemClick('BSAT')}>BSAT</div>
-      <div onClick={() => handleItemClick('BSET')}>BSET</div>
-      <div onClick={() => handleItemClick('BSFT')}>BSFT</div>
-    </div>
-  </div>
-
-  <input
-    type="text"
-    placeholder="Search by name"
-    value={searchQuery}
-    onChange={handleSearch}
-    className="searchfaculty"
-  />
-</div>
-
+        <input
+          type="text"
+          placeholder="Search by name"
+          value={searchQuery}
+          onChange={handleSearch}
+          className="searchfaculty"
+        />
+      </div>
+  
       <div className="dashboard">
         <SidebarAdmin />
         <div className="content">
-        <div className='faculty-content'>
-        
-
+          <div className='faculty-content'>
             <div className='list-user'>
-              {loading ? (
-                <p>Loading...</p>
-              ) : (
-                filteredUsers.map((user, index) => (
-                  <div className="User-content" key={index}>
-                    <br />
-                    <ul>
-                      <div className='User-constent'>
-                        <li className='details-lists'>
-                          <img className='faculty-user-picture' src={user.picture} alt="User" />
-                        </li>
-                        <li className='details-lists'>Name: {user.name}</li>
-                        <li className='details-lists'>Email: {user.email}</li>
-                        <li className='details-lists'>Role: {getRoleName(user.role)}</li>
-                        <li className='details-lists'>
-                          <li className='details-list-update'>
-                            {editMode && editedUser && user.email === editedUser.email ? (
-                              <>
-                                <div className="dropdownfacultymana">
-                                  Role:
-                                  <button className="dropbtnfaculty">{getRoleName(updatedrole)}</button>
-                                  <div className="dropdown-content">
-                                    <div onClick={() => setUpdatedrole(1)}>Admin</div>
-                                    <div onClick={() => setUpdatedrole(2)}>Secretary</div>
-                                    <div onClick={() => setUpdatedrole(3)}>Instructor</div>
-                                    <div onClick={() => setUpdatedrole(0)}>User</div>
-                                  </div>
-                                </div>
-                                {updatedrole !== editedUser.role && (
-                                  <button className='editbutton' type="button" onClick={handleConfirmation}>Update</button>
-                                )}
-                                <button className='editbutton' type="button" onClick={() => handleDeleteUser(user.email)}>Delete</button>
-                              </>
-                            ) : (
-                              <button className='editbutton' type="button" onClick={() => handleEditUser(user)}>Edit Role</button>
-                            )}
-                          </li>
-                        </li>
-                      </div>
-                    </ul>
-                  </div>
-                ))
-              )}
+            {loading ? (
+  <p>Loading...</p>
+) : filteredUsers.length === 0 ? (
+  <p>No Instructors found</p>
+) : (
+  filteredUsers.map((user, index) => (
+    <div className="User-content" key={index}>
+      <br />
+      <div className='user-profile'>
+        <img className='user-picture-faculty' src={user.picture} alt="User" />
 
+        <div className='user-details'>
+          <div className='details-list'>
+            <ul className='detail-list'>
+              <li className='detail-item'>
+                Name: {user.name}
+              </li>
+              <li className='detail-item'>
+                Email: {user.email}
+              </li>
+              <li className='detail-item'>
+                Department: {user.department}
+              </li>
+              <li className='detail-item'>
+                Role: {getRoleName(user.role)}
+                {showEditButton && (
+                  <button id="editbotton" className='editbutton' onClick={() => handleEditUser(user)}>Edit Role</button>
+                )}
+              </li>
+            </ul>
+          </div>
+          <div className="details-list-update">
+            {editMode && editedUser?.email === user.email ? (
+              <>
+                <div className="dropdownfacultymana">
+                  Role:
+                  <button className="dropbtnfaculty">
+                    {getRoleName(updatedrole)}
+                  </button>
+                  <div className="dropdown-content">
+                    <div onClick={() => setUpdatedrole(1)}>Admin</div>
+                    <div onClick={() => setUpdatedrole(2)}>Secretary</div>
+                    <div onClick={() => setUpdatedrole(3)}>Instructor</div>
+                    <div onClick={() => setUpdatedrole(0)}>User</div>
+                  </div>
+                </div>
+                <button className='editbutton' onClick={handleConfirmation}>Save</button>
+                <button className='deletebutton' onClick={() => handleDeleteUser(user.email)}>Delete</button>
+                <button className='editbutton' onClick={handleCancelEdit}>Cancel</button>
+              </>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    </div>
+  ))
+)}
+
+  
               {isconfirmationopen && (
                 <div className='editbuttodelete'>
                   <div className="confirmation-modal">
                     <div className="modal-content">
                       <p>Are you sure you want to update the role of this user?</p>
-                   
                       <div className="button-container">
-        <button onClick={handleConfirmationClose} className="btn-no">No</button>
-        <button onClick={handleConfirmSend} className="btn-yes">Yes</button>
-      </div>
+                        <button onClick={handleConfirmationClose} className="btn-no">No</button>
+                        <button onClick={handleConfirmSend} className="btn-yes">Yes</button>
+                      </div>
                     </div>
                   </div>
                 </div>
               )}
-
-{isDeleteConfirmationOpen && (
-  <div className="confirmation-modal">
-    <div className="modal-content">
-      <p>Are you sure you want to delete this user?</p>
-      <div className="button-container">
-        <button onClick={handleConfirmationClosedelete} className="btn-no">No</button>
-        <button onClick={handleConfirmDelete} className="btn-yes">Yes</button>
-      </div>
-    </div>
-  </div>
-)}
-
+  
+              {isDeleteConfirmationOpen && (
+                <div className="confirmation-modal">
+                  <div className="modal-content">
+                    <p>Are you sure you want to delete this user?</p>
+                    <div className="button-container">
+                      <button onClick={handleConfirmationClosedelete} className="btn-no">No</button>
+                      <button onClick={handleConfirmDelete} className="btn-yes">Yes</button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -391,6 +414,7 @@ const Adminfacultymanager = ({ history }) => {
       <Footer />
     </>
   );
+  
 };
 
 export default Adminfacultymanager;
