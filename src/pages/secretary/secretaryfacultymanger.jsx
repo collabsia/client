@@ -8,7 +8,7 @@ import '../../App.css';
 
 const Secretaryfacultymanager = ({ history }) => {
   const [userprofile, usersetProfile] = useState([]);
-  const [activeMenuItem, setActiveMenuItem] = useState('InviteMember');
+
   const [editMode, setEditMode] = useState(false);
   const [updatedrole, setUpdatedrole] = useState();
   const [editedUser, setEditedUser] = useState(null);
@@ -18,7 +18,7 @@ const Secretaryfacultymanager = ({ history }) => {
   const { email, name, role, picture, createdAt, department } = userprofile;
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-
+  const [showEditButton, setShowEditButton] = useState(true); 
   const handleSearch = (event) => {
     const { value } = event.target;
     setSearchQuery(value);
@@ -231,13 +231,15 @@ const Secretaryfacultymanager = ({ history }) => {
           params: { token },
           headers: { Authorization: `Bearer ${token}` }
         });
-        usersetProfile(getUsersResponse.data.users);
+      
         setEditMode(false);
+        setShowEditButton(true); 
+        usersetProfile(getUsersResponse.data.users);
         toast.success('Role updated successfully');
       }
     } catch (error) {
-      console.error('Error updating role:', error);
-      toast.error('Error updating role');
+
+      toast.error('Invalid Updating Role!');
     } finally {
       setConfirmationOpen(false);
     }
@@ -260,111 +262,133 @@ const Secretaryfacultymanager = ({ history }) => {
 
   const handleEditUser = (user) => {
     setEditMode(true);
+    setShowEditButton(false);
+
     setEditedUser(user);
     setUpdatedrole(user.role);
+  };
+  const handleCancelEdit = () => {
+    setEditMode(false);
+    setEditedUser(null);
+    setUpdatedrole(null);
+    setShowEditButton(true); 
   };
 
   return (
     <>
       <HeaderDashboard />
       <div className="content-header">
-  <div className="spacer"></div>
+        <div className="spacer"></div>
+        
+        <div className="dropdownfaculty">
+          <button className="dropbtnfacultymanager">Filter</button>
+          <div className="dropdown-content">
+            <div onClick={() => handleItemClick('ALL')}>ALL</div>
+            <div onClick={() => handleItemClick('ADMIN')}>ADMIN</div>
+            <div onClick={() => handleItemClick('SECRETARY')}>SECRETARY</div>
+            <div onClick={() => handleItemClick('INSTRUCTORS')}>INSTRUCTORS</div>
+            <div onClick={() => handleItemClick('BSIT')}>BSIT</div>
+            <div onClick={() => handleItemClick('BSAT')}>BSAT</div>
+            <div onClick={() => handleItemClick('BSET')}>BSET</div>
+            <div onClick={() => handleItemClick('BSFT')}>BSFT</div>
+          </div>
+        </div>
   
-  <div className="dropdownfaculty">
-    <button className="dropbtnfacultymanager">Filter</button>
-    <div className="dropdown-content">
-      <div onClick={() => handleItemClick('ALL')}>ALL</div>
-      <div onClick={() => handleItemClick('ADMIN')}>ADMIN</div>
-      <div onClick={() => handleItemClick('SECRETARY')}>SECRETARY</div>
-      <div onClick={() => handleItemClick('USERS')}>USERS</div>
-      <div onClick={() => handleItemClick('BSIT')}>BSIT</div>
-      <div onClick={() => handleItemClick('BSAT')}>BSAT</div>
-      <div onClick={() => handleItemClick('BSET')}>BSET</div>
-      <div onClick={() => handleItemClick('BSFT')}>BSFT</div>
-    </div>
-  </div>
-
-  <input
-    type="text"
-    placeholder="Search by name"
-    value={searchQuery}
-    onChange={handleSearch}
-    className="searchfaculty"
-  />
-</div>
-
+        <input
+          type="text"
+          placeholder="Search by name"
+          value={searchQuery}
+          onChange={handleSearch}
+          className="searchfaculty"
+        />
+      </div>
+  
       <div className="dashboard">
         <SidebarSecretary />
         <div className="content">
           <div className='faculty-content'>
-
             <div className='list-user'>
-              {loading ? (
-                <p>Loading...</p>
-              ) : (
-                filteredUsers.map((user, index) => (
-                  <div className="User-content" key={index}>
-                    <br />
-                    <ul>
-                      <div className='User-constent'>
-                        <li className='details-lists'>
-                          <img className='faculty-user-picture' src={user.picture} alt="User" />
-                        </li>
-                        <li className='details-lists'>Name: {user.name}</li>
-                        <li className='details-lists'>Email: {user.email}</li>
-                        <li className='details-lists'>Role: {getRoleName(user.role)}</li>
-                        <li className='details-lists'>
-                          <li className='details-list-update'>
-                            {editMode && editedUser && user.email === editedUser.email ? (
-                              <>
-                                <div className="dropdownfacultymana">
-                                  Role:
-                                  <button className="dropbtnfaculty">{getRoleName(updatedrole)}</button>
-                                  <div className="dropdown-content">
-                                    <div onClick={() => setUpdatedrole(1)}>Admin</div>
-                                    <div onClick={() => setUpdatedrole(2)}>Secretary</div>
-                                    <div onClick={() => setUpdatedrole(3)}>Instructor</div>
-                                    <div onClick={() => setUpdatedrole(0)}>User</div>
-                                  </div>
-                                </div>
-                                {updatedrole !== editedUser.role && (
-                                  <button className='editbutton' type="button" onClick={handleConfirmation}>Update</button>
-                                )}
-                                <button className='editbutton' type="button" onClick={() => handleDeleteUser(user.email)}>Delete</button>
-                              </>
-                            ) : (
-                              <button className='editbutton' type="button" onClick={() => handleEditUser(user)}>Edit Role</button>
-                            )}
-                          </li>
-                        </li>
-                      </div>
-                    </ul>
-                  </div>
-                ))
-              )}
+            {loading ? (
+  <p>Loading...</p>
+) : filteredUsers.length === 0 ? (
+  <p>No Instructors found</p>
+) : (
+  filteredUsers.map((user, index) => (
+    <div className="User-content" key={index}>
+      <br />
+      <div className='user-profile'>
+        <img className='user-picture-faculty' src={user.picture} alt="User" />
 
+        <div className='user-details'>
+          <div className='details-list'>
+            <ul className='detail-list'>
+              <li className='detail-item'>
+                Name: {user.name}
+              </li>
+              <li className='detail-item'>
+                Email: {user.email}
+              </li>
+              <li className='detail-item'>
+                Department: {user.department}
+              </li>
+              <li className='detail-item'>
+                Role: {getRoleName(user.role)}
+                {showEditButton && (
+                  <button id="editbotton" className='editbutton' onClick={() => handleEditUser(user)}>Edit Role</button>
+                )}
+              </li>
+            </ul>
+          </div>
+          <div className="details-list-update">
+            {editMode && editedUser?.email === user.email ? (
+              <>
+                <div className="dropdownfacultymana">
+                  Role:
+                  <button className="dropbtnfaculty">
+                    {getRoleName(updatedrole)}
+                  </button>
+                  <div className="dropdown-content">
+                    <div onClick={() => setUpdatedrole(1)}>Admin</div>
+                    <div onClick={() => setUpdatedrole(2)}>Secretary</div>
+                    <div onClick={() => setUpdatedrole(3)}>Instructor</div>
+                    <div onClick={() => setUpdatedrole(0)}>User</div>
+                  </div>
+                </div>
+                <button className='editbutton' onClick={handleConfirmation}>Save</button>
+                <button className='deletebutton' onClick={() => handleDeleteUser(user.email)}>Delete</button>
+                <button className='editbutton' onClick={handleCancelEdit}>Cancel</button>
+              </>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    </div>
+  ))
+)}
+
+  
               {isconfirmationopen && (
                 <div className='editbuttodelete'>
                   <div className="confirmation-modal">
                     <div className="modal-content">
                       <p>Are you sure you want to update the role of this user?</p>
                       <div className="button-container">
-        <button onClick={handleConfirmationClose} className="btn-no">No</button>
-        <button onClick={handleConfirmSend} className="btn-yes">Yes</button>
-      </div>
+                        <button onClick={handleConfirmationClose} className="btn-no">No</button>
+                        <button onClick={handleConfirmSend} className="btn-yes">Yes</button>
+                      </div>
                     </div>
                   </div>
                 </div>
               )}
-
+  
               {isDeleteConfirmationOpen && (
                 <div className="confirmation-modal">
                   <div className="modal-content">
                     <p>Are you sure you want to delete this user?</p>
                     <div className="button-container">
-        <button onClick={handleConfirmationClosedelete} className="btn-no">No</button>
-        <button onClick={handleConfirmDelete} className="btn-yes">Yes</button>
-      </div>
+                      <button onClick={handleConfirmationClosedelete} className="btn-no">No</button>
+                      <button onClick={handleConfirmDelete} className="btn-yes">Yes</button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -375,6 +399,8 @@ const Secretaryfacultymanager = ({ history }) => {
       <Footer />
     </>
   );
+  
 };
+
 
 export default Secretaryfacultymanager;
