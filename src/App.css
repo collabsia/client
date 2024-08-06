@@ -479,12 +479,13 @@
 }
 
 
+
 .modal-userprofile button {
-  background-color: #221b1b;
+ background-color: #4e4f4e;
   color: #ffffff;
   border: none;
   padding: 10px 20px;
-  font-size: 12px;
+  font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -4141,5 +4142,3 @@ html, body {
   background-color: #f9f9f9;
   position: relative; /* Position relative for any absolute positioning inside */
 }
-
-
