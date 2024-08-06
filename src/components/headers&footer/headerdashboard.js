@@ -20,9 +20,16 @@ const Header = () => {
   });
   const [selectedDepartment, setSelectedDepartment] = useState(profile.department);
 
-
   const token = localStorage.getItem('token');
   const history = useHistory();
+
+  // Mapping between full department names and abbreviations
+  const departmentMapping = {
+    'Bachelor of Science and Information Technology': 'BSIT',
+    'Bachelor of Science in Food Technology': 'BSFT',
+    'Bachelor of Science in Automotive Technology': 'BSAT',
+    'Bachelor of Science in Electrical Technology': 'BSET',
+  };
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -175,7 +182,11 @@ const Header = () => {
       console.log(error);
     }
   };
-  
+
+  // Function to get department abbreviation
+  const getDepartmentAbbreviation = (fullName) => {
+    return departmentMapping[fullName] || fullName;
+  };
 
   return (
     <div>
@@ -199,38 +210,35 @@ const Header = () => {
                 <div className="modal-userprofile">
                   <div className="user-profile-details">
                     <div className='user-info'>
-                      <center><h2>User Profile</h2>
-                      <img className='user-picture' src={profile.picture} alt="User" />
-                      <p><strong>Name:</strong> {profile.name}</p>
-                      <p><strong>Department: </strong> 
-                        {isEditingDepartment ? (
-                     <select
-  value={selectedDepartment} // Ensure this matches one of the option values
-  onChange={handleDepartmentChange}
->
-<option value="Bachelor of Science and Information Technology">BSIT</option>
-                <option value="Bachelor of Science in Food Technology">BSFT</option>
-                <option value="Bachelor of Science in Automotive Technology">BSAT</option>
-                <option value="Bachelor of Science in Electrical Technology">BSET</option>
-</select>
-
-                        
-                        ) : (
-                          profile.department
-                        )}
-                      </p>
-                      
-                      <p><strong>Join Date:</strong> {new Date(profile.createdAt).toLocaleDateString()}</p>
-                      <p><strong>Role:</strong> {profile.role === 1 ? 'Admin' : profile.role === 2 ? 'Secretary' : profile.role === 3 ? 'Instructor' : 'Unregistered user'}</p>
-                     
+                      <center>
+                        <h2>User Profile</h2>
+                        <img className='user-picture' src={profile.picture} alt="User" />
+                        <p><strong>Name:</strong> {profile.name}</p>
+                        <p><strong>Department: </strong> 
+                          {isEditingDepartment ? (
+                            <select
+                              value={selectedDepartment}
+                              onChange={handleDepartmentChange}
+                            >
+                              {Object.entries(departmentMapping).map(([fullName, shortName]) => (
+                                <option key={shortName} value={fullName}>
+                                  {shortName}
+                                </option>
+                              ))}
+                            </select>
+                          ) : (
+                            getDepartmentAbbreviation(profile.department)
+                          )}
+                        </p>
+                        <p><strong>Join Date:</strong> {new Date(profile.createdAt).toLocaleDateString()}</p>
+                        <p><strong>Role:</strong> {profile.role === 1 ? 'Admin' : profile.role === 2 ? 'Secretary' : profile.role === 3 ? 'Instructor' : 'Unregistered user'}</p>
                       </center>
-                       {isEditingDepartment ? (
+                      {isEditingDepartment ? (
                         <>
-                                <div className="button-container">
-                                <button  onClick={() => setIsEditingDepartment(false)}>Cancel</button>
-                             <button onClick={handleUpdateDepartment} >Update</button>
-                                </div>
-
+                          <div className="button-container">
+                            <button onClick={() => setIsEditingDepartment(false)}>Cancel</button>
+                            <button onClick={handleUpdateDepartment}>Update</button>
+                          </div>
                         </>
                       ) : (
                         <button onClick={() => setIsEditingDepartment(true)}>Edit Department</button>
