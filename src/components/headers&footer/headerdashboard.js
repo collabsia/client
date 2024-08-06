@@ -8,6 +8,7 @@ import '../../App.css';
 const Header = () => {
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [isUserDetailsModalOpen, setIsUserDetailsModalOpen] = useState(false);
+  const [isEditingDepartment, setIsEditingDepartment] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [profile, setProfile] = useState({
     name: '',
@@ -17,6 +18,8 @@ const Header = () => {
     picture: '',
     department: '',
   });
+  const [selectedDepartment, setSelectedDepartment] = useState(profile.department);
+
 
   const token = localStorage.getItem('token');
   const history = useHistory();
@@ -33,6 +36,7 @@ const Header = () => {
         if (res.ok) {
           const result = await res.json();
           setProfile(result.user);
+          setSelectedDepartment(result.user.department);
         } else {
           console.error('Error fetching profile:', res.statusText);
         }
@@ -146,6 +150,33 @@ const Header = () => {
     setIsNotificationModalOpen(false);
   };
 
+  const handleDepartmentChange = (event) => {
+    setSelectedDepartment(event.target.value);
+  };
+
+  const handleUpdateDepartment = async () => {
+    try {
+      const response = await axios.post('https://server-gzmw.onrender.com/api/updateDepartment', 
+        { department: selectedDepartment, token }, 
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status === 200) {
+        toast.success('Department updated successfully.');
+        setProfile((prevProfile) => ({ ...prevProfile, department: selectedDepartment }));
+        setIsEditingDepartment(false);
+      }
+    } catch (error) {
+      toast.error('An error occurred while updating department.');
+      console.log(error);
+    }
+  };
+  
+
   return (
     <div>
       <div className='head'>
@@ -165,23 +196,50 @@ const Header = () => {
                 Account
               </button>
               {isUserDetailsModalOpen && (
-  <div className="modal-userprofile">
- 
-    <div className="user-profile-details">
-      <div className='user-info'>
-      <center><h2>User Profile</h2></center>
-      <img className='user-picture' src={profile.picture} alt="User" />
-        <p><strong>Name:</strong> {profile.name}</p>
-        <p><strong>Email:</strong> {profile.email}</p>
-        <p><strong>Department:</strong> {profile.department}</p>
-        <p><strong>Join Date:</strong> {new Date(profile.createdAt).toLocaleDateString()}</p>
-        <p><strong>Role:</strong> {profile.role === 1 ? 'Admin' : profile.role === 2 ? 'Secretary' : profile.role === 3 ? 'Instructor' : 'Unregistered user'}</p>
-      </div>
-    </div>
-    <button onClick={handleCloseUserDetailsModal}>Close</button>
-  </div>
-)}
+                <div className="modal-userprofile">
+                  <div className="user-profile-details">
+                    <div className='user-info'>
+                      <center><h2>User Profile</h2>
+                      <img className='user-picture' src={profile.picture} alt="User" />
+                      <p><strong>Name:</strong> {profile.name}</p>
+                      <p><strong>Department: </strong> 
+                        {isEditingDepartment ? (
+                     <select
+  value={selectedDepartment} // Ensure this matches one of the option values
+  onChange={handleDepartmentChange}
+>
+<option value="Bachelor of Science and Information Technology">BSIT</option>
+                <option value="Bachelor of Science in Food Technology">BSFT</option>
+                <option value="Bachelor of Science in Automotive Technology">BSAT</option>
+                <option value="Bachelor of Science in Electrical Technology">BSET</option>
+</select>
 
+                        
+                        ) : (
+                          profile.department
+                        )}
+                      </p>
+                      
+                      <p><strong>Join Date:</strong> {new Date(profile.createdAt).toLocaleDateString()}</p>
+                      <p><strong>Role:</strong> {profile.role === 1 ? 'Admin' : profile.role === 2 ? 'Secretary' : profile.role === 3 ? 'Instructor' : 'Unregistered user'}</p>
+                     
+                      </center>
+                       {isEditingDepartment ? (
+                        <>
+                                <div className="button-container">
+                                <button  onClick={() => setIsEditingDepartment(false)}>Cancel</button>
+                             <button onClick={handleUpdateDepartment} >Update</button>
+                                </div>
+
+                        </>
+                      ) : (
+                        <button onClick={() => setIsEditingDepartment(true)}>Edit Department</button>
+                      )}
+                    </div>
+                  </div>
+                  <button onClick={handleCloseUserDetailsModal}>Close</button>
+                </div>
+              )}
             </div>
 
             <div className="notification-container">
@@ -202,8 +260,8 @@ const Header = () => {
                         onClick={() => handleNotificationClick(notification)}
                         className="clickable-notification"
                       >
-                      <div>From: {notification.senderName}</div>
-                   <div><strong>Type: {notification.type}</strong></div>
+                        <div>From: {notification.senderName}</div>
+                        <div><strong>Type: {notification.type}</strong></div>
                       </p>
                     ))}
                   </div>
@@ -211,7 +269,7 @@ const Header = () => {
                 </div>
               )}
             </div>
-            <button className='button-logout' type="submit" to='/login' onClick={Logout}>
+            <button className='button-logout' type="submit" onClick={Logout}>
               Log out
             </button>
           </ul>
