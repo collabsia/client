@@ -107,7 +107,7 @@ const InviteMember = () => {
       <option value="" disabled selected hidden>Select Role</option>
       <option value="1">Admin</option>
       <option value="2">Secretary</option>
-      <option value="3">User</option>
+      <option value="3">Instructor</option>
     </select>
     <button type="button" className="send-invite-button" onClick={handleConfirmation}>Send</button>
   </div>
